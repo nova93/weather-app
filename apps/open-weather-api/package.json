@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "test": "echo No tests :-)",
-    "dev": "wrangler dev"
+    "dev": "wrangler dev --port=8000 --inspector-port=8100"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.16.0",
