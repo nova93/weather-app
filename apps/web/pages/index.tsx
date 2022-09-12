@@ -72,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   const succ: Data = {
     title: `${data?.name}, ${data?.sys?.country}`,
-    weatherIconUrl: `http://openweathermap.org/img/wn/${data.weather?.[0].icon}@4x.png`,
+    weatherIconUrl: `https://openweathermap.org/img/wn/${data.weather?.[0].icon}@4x.png`,
     currentTemp: 10,
     weatherDescription: "something",
   };
