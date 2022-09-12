@@ -2,8 +2,5 @@
   "name": "shared-types",
   "version": "0.0.0",
   "private": true,
-  "types": "./index.ts",
-  "files": [
-    "forecast.ts"
-  ]
+  "types": "./index.ts"
 }

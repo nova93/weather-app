@@ -1,7 +1,9 @@
+/* eslint-disable import/no-anonymous-default-export */
 import type { Forecast } from "shared-types";
 
-/* eslint-disable import/no-anonymous-default-export */
-export interface Env {}
+export interface Env {
+  OPEN_WEATHER_API_KEY: string;
+}
 
 const defaultHeaders = {
   "Access-Control-Allow-Credentials": "true",
@@ -15,7 +17,7 @@ const LONGITUDE = "lon";
 
 const genericError = () => {
   return new Response(
-    JSON.stringify({ error: "Something went wrong" }, null, 2),
+    JSON.stringify({ error: "Something went wrong", ok: false }, null, 2),
     {
       status: 500,
       headers: {
@@ -41,7 +43,7 @@ export default {
     ) {
       return new Response(
         JSON.stringify(
-          { error: `${LATITUDE} or ${LONGITUDE} is missing` },
+          { error: `${LATITUDE} or ${LONGITUDE} is missing`, ok: false },
           null,
           2
         ),
@@ -61,10 +63,10 @@ export default {
       lon: parsedUrl.searchParams.get(LONGITUDE),
     };
 
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${env.OPEN_WEATHER_API_KEY}&units=metric`;
+
     try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${OPEN_WEATHER_API_KEY}&units=metric`
-      );
+      const res = await fetch(url);
       const data: Forecast = await res.json();
 
       // open weather returns errors in 200
@@ -73,20 +75,7 @@ export default {
         return genericError();
       }
 
-      // TODO: there gotta be a better way...
-      const cleanedData: Forecast = { ...data };
-      delete cleanedData.coord;
-      delete cleanedData.base;
-      delete cleanedData.dt;
-      delete cleanedData.timezone;
-      delete cleanedData.id;
-      delete cleanedData.cod;
-      delete cleanedData.weather?.[0].id;
-      delete cleanedData.weather?.[0].main;
-      delete cleanedData.sys?.id;
-      delete cleanedData.sys?.type;
-
-      return new Response(JSON.stringify(cleanedData, null, 2), {
+      return new Response(JSON.stringify({ ...data, ok: true }, null, 2), {
         headers: {
           "content-type": "application/json;charset=UTF-8",
           ...defaultHeaders,
