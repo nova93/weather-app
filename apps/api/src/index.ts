@@ -63,7 +63,7 @@ export default {
 
     try {
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${env.OPEN_WEATHER_API_KEY}&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${OPEN_WEATHER_API_KEY}&units=metric`
       );
       const data: Forecast = await res.json();
 
