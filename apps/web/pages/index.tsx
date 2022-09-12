@@ -1,9 +1,13 @@
 import Head from "next/head";
-import Image from "next/image";
+import getConfig from "next/config";
 import { Grid, Typography } from "@mui/material";
-import type { Forecast } from "shared-types";
-import { API_URL } from "../config/system";
+import { OPEN_WEATHER_API, UNSPlASH_API } from "../config/system";
 import { GetServerSideProps } from "next";
+import type { ForecastResponse } from "shared-types";
+import { AboveFold } from "ui";
+
+const { publicRuntimeConfig } = getConfig();
+const { isLocal } = publicRuntimeConfig;
 
 type MainPage = {
   data?: Data;
@@ -17,64 +21,63 @@ type Data = {
   weatherDescription: string;
 };
 
+const defaultWeatherIconUrl = "https://openweathermap.org/img/wn/04d@4x.png";
+
 const MainPage = ({ data, error }: MainPage) => {
   if (error || !data)
     return (
-      <Typography variant="h1" component="h1">
-        Please enable location services
-      </Typography>
+      <>
+        <Head>
+          <title>Lack of location - Forecast</title>
+          <link rel="icon" type="image/x-icon" href={defaultWeatherIconUrl} />
+        </Head>
+        <Typography variant="h1" component="h1">
+          Please enable location services
+        </Typography>
+      </>
     );
 
   return (
-    <div>
+    <>
       <Head>
         <link rel="icon" type="image/x-icon" href={data.weatherIconUrl} />
         <title>{`${data.title} - Forecast`}</title>
       </Head>
-      <Typography variant="h1" component="h1">
-        {data.title}
-      </Typography>
-
-      <Grid container>
-        <Grid item>
-          <Typography variant="h2" component="h2">
-            {data.currentTemp} &#8451;
-          </Typography>
+      <AboveFold
+        bgimage={`${UNSPlASH_API}/?query=${encodeURIComponent(
+          data.weatherDescription
+        )}`}
+      >
+        <Typography variant="h1" component="h1" gutterBottom>
+          {data.title}
+        </Typography>
+        <Grid container>
+          <Grid item>
+            <Typography variant="h2" component="h2">
+              {data.currentTemp} &#8451;
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <Image
-            alt={data.weatherDescription}
-            src={data.weatherIconUrl}
-            width={100}
-            height={100}
-          />
-        </Grid>
-        <Grid item>
-          <Typography variant="h2" component="h2">
-            {data.weatherDescription}
-          </Typography>
-        </Grid>
-      </Grid>
-    </div>
+      </AboveFold>
+    </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { lat, lon } = query || {};
-  const res = await fetch(`${API_URL}/?lat=${lat}&lon=${lon}`);
-  const data: Forecast = await res.json();
+  const { lat = isLocal && -37.9517818, lon = isLocal && 145.008277 } =
+    query || {};
+  const res = await fetch(`${OPEN_WEATHER_API}/?lat=${lat}&lon=${lon}`);
+  const data: ForecastResponse = await res.json();
 
-  if (!data) {
+  if (!data.ok) {
     return { props: { error: true } };
   }
 
   const succ: Data = {
-    title: `${data?.name}, ${data?.sys?.country}`,
-    weatherIconUrl: `https://openweathermap.org/img/wn/${data.weather?.[0].icon}@4x.png`,
-    currentTemp: 10,
-    weatherDescription: "something",
+    title: `${data?.name}, ${data.sys.country}`,
+    weatherIconUrl: `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`,
+    currentTemp: Math.round(data.main.temp),
+    weatherDescription: data.weather[0].description,
   };
 
   return {

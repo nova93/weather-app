@@ -38,17 +38,25 @@ type Sys = {
 };
 
 export type Forecast = {
+  ok: true;
   coord?: Coords;
-  weather?: Weather[];
-  base?: string;
-  main?: Main;
-  visibility?: number;
-  wind?: Wind;
-  clouds?: Clouds;
+  weather: Weather[];
+  base: string;
+  main: Main;
+  visibility: number;
+  wind: Wind;
+  clouds: Clouds;
   dt?: number;
-  sys?: Sys;
+  sys: Sys;
   timezone?: number;
   id?: number;
-  name?: string;
+  name: string;
   cod?: number;
 };
+
+export type ForecastError = {
+  ok: false;
+  error: string;
+};
+
+export type ForecastResponse = Forecast | ForecastError;
