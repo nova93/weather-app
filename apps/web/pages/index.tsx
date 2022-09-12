@@ -3,10 +3,11 @@ import Image from "next/image";
 import { Grid, Typography } from "@mui/material";
 import type { Forecast } from "shared-types";
 import { API_URL } from "../config/system";
+import { GetServerSideProps } from "next";
 
 type MainPage = {
-  data: Data;
-  error: boolean;
+  data?: Data;
+  error?: boolean;
 };
 
 type Data = {
@@ -60,11 +61,7 @@ const MainPage = ({ data, error }: MainPage) => {
   );
 };
 
-export const getServerSideProps = async ({
-  query,
-}: {
-  query: Forecast["coord"];
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { lat, lon } = query || {};
   const res = await fetch(`${API_URL}/?lat=${lat}&lon=${lon}`);
   const data: Forecast = await res.json();
@@ -73,7 +70,7 @@ export const getServerSideProps = async ({
     return { props: { error: true } };
   }
 
-  const props: Data = {
+  const succ: Data = {
     title: `${data?.name}, ${data?.sys?.country}`,
     weatherIconUrl: `http://openweathermap.org/img/wn/${data.weather?.[0].icon}@4x.png`,
     currentTemp: 10,
@@ -81,7 +78,7 @@ export const getServerSideProps = async ({
   };
 
   return {
-    props,
+    props: { data: succ },
   };
 };
 
