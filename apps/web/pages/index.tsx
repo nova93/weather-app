@@ -43,11 +43,7 @@ const MainPage = ({ data, error }: MainPage) => {
         <link rel="icon" type="image/x-icon" href={data.weatherIconUrl} />
         <title>{`${data.title} - Forecast`}</title>
       </Head>
-      <AboveFold
-        bgimage={`${UNSPlASH_API}/?query=${encodeURIComponent(
-          data.weatherDescription
-        )}`}
-      >
+      <AboveFold bgimage={`${UNSPlASH_API}/${data.weatherTypeId}`}>
         <Typography variant="h1" component="h1" gutterBottom>
           {data.title}
         </Typography>
@@ -78,6 +74,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     weatherIconUrl: `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`,
     currentTemp: Math.round(data.main.temp),
     weatherDescription: data.weather[0].description,
+    weatherTypeId: data.weather[0].id,
   };
 
   return {
