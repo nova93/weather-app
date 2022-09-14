@@ -12,5 +12,5 @@
       "cache": false
     }
   },
-  "globalDependencies": ["$IS_LOCAL"]
+  "globalDependencies": ["$IS_LOCAL", "$OPEN_WEATHER_API", "$UNSPlASH_API"]
 }

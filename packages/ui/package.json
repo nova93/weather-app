@@ -7,13 +7,14 @@
   "scripts": {
     "lint": "eslint *.ts*"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.10.3",
-    "@mui/material": "^5.10.4",
-    "@mui/styled-engine-sc": "^5.10.3",
-    "styled-components": "^5.3.5"
+    "@mui/material": "^5.10.5"
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",

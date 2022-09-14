@@ -4,7 +4,7 @@ type Coords = {
 };
 
 type Weather = {
-  id?: number;
+  id: number;
   main?: string;
   description: string;
   icon: string;
