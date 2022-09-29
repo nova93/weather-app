@@ -5,12 +5,14 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
   const { nextUrl: url, geo } = req;
 
   event.waitUntil(
-    fetch(`http://ip-api.com/json/${req.ip}`)
+    fetch(new URL(`http://ip-api.com/json/${req.ip}`))
       .then((res) => res.json())
       .then((data) => console.log("data", data))
   );
 
-  console.log("req", req);
+  console.log("ip", req.ip);
+  console.log("geo", req.geo);
+
   if (geo?.latitude && geo?.longitude) {
     url.searchParams.set("lat", geo.latitude);
     url.searchParams.set("lon", geo.longitude);
@@ -24,6 +26,8 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
 
   //   console.log("data", data);
   // }
+
+  return NextResponse.next();
 }
 
 export const config = {
