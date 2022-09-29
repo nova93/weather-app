@@ -10,6 +10,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
+  console.log("Location from Geo", geo);
+
   if (ip) {
     const res = await fetch(`http://ip-api.com/json/${ip}`);
     const data = await res.json();
@@ -25,8 +27,6 @@ export async function middleware(req: NextRequest) {
   if (geo?.latitude && geo?.longitude) {
     url.searchParams.set("lat", geo.latitude);
     url.searchParams.set("lon", geo.longitude);
-
-    console.log("Location from Geo", geo);
 
     return NextResponse.rewrite(url);
   }
