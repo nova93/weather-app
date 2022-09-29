@@ -17,12 +17,17 @@ export async function middleware(req: NextRequest) {
     url.searchParams.set("lat", data.lat);
     url.searchParams.set("lon", data.lon);
 
+    console.log("Location from IP", data);
+
     return NextResponse.rewrite(url);
   }
 
   if (geo?.latitude && geo?.longitude) {
     url.searchParams.set("lat", geo.latitude);
     url.searchParams.set("lon", geo.longitude);
+
+    console.log("Location from Geo", geo);
+
     return NextResponse.rewrite(url);
   }
 
