@@ -10,7 +10,7 @@ import DetailsBox from "../components/DetailsBox";
 import NoLocation from "../components/NoLocation";
 
 const { publicRuntimeConfig } = getConfig();
-const { isLocal, OPEN_WEATHER_API, UNSPlASH_API } = publicRuntimeConfig;
+const { OPEN_WEATHER_API, UNSPlASH_API } = publicRuntimeConfig;
 
 type MainPage = {
   data?: ModifiedForecast;
