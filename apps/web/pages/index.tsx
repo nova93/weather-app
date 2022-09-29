@@ -10,7 +10,7 @@ import DetailsBox from "../components/DetailsBox";
 import NoLocation from "../components/NoLocation";
 
 const { publicRuntimeConfig } = getConfig();
-const { isLocal, OPEN_WEATHER_API, UNSPlASH_API } = publicRuntimeConfig;
+const { OPEN_WEATHER_API, UNSPLASH_API } = publicRuntimeConfig;
 
 type MainPage = {
   data?: ModifiedForecast;
@@ -51,7 +51,7 @@ const MainPage = ({ data, error }: MainPage) => {
         <link rel="icon" type="image/x-icon" href={data.weatherIconUrl} />
         <title>{title}</title>
       </Head>
-      <AboveFold bgimage={`${UNSPlASH_API}/${data.weatherTypeId}`}>
+      <AboveFold bgimage={`${UNSPLASH_API}/${data.weatherTypeId}`}>
         <Typography variant="h1" component="h1" gutterBottom>
           {data.title}
         </Typography>
@@ -69,8 +69,7 @@ const MainPage = ({ data, error }: MainPage) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { lat = isLocal && -37.9517818, lon = isLocal && 145.008277 } =
-    query || {};
+  const { lat, lon } = query || {};
 
   // TODO: endpoint auth (this is server-side, so we can have API keys)
   const res = await fetch(`${OPEN_WEATHER_API}/?lat=${lat}&lon=${lon}`);
