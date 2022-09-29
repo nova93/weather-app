@@ -4,8 +4,10 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
   const { nextUrl: url, geo, ip } = req;
 
+  const ipApiUrl = `http://ip-api.com/json/${ip}`;
+
   event.waitUntil(
-    fetch(`http://ip-api.com/json/${ip}`)
+    fetch(ipApiUrl)
       .then((res) => res.json())
       .then((data) => console.log("data", data))
   );
