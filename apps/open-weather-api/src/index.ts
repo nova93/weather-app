@@ -1,32 +1,13 @@
 /* eslint-disable import/no-anonymous-default-export */
 import type { Forecast } from "shared-types";
+import { defaultHeaders, genericError } from "workers-common";
 
 export interface Env {
   OPEN_WEATHER_API_KEY: string;
 }
 
-const defaultHeaders = {
-  "Access-Control-Allow-Credentials": "true",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
 const LATITUDE = "lat";
 const LONGITUDE = "lon";
-
-const genericError = () => {
-  return new Response(
-    JSON.stringify({ error: "Something went wrong", ok: false }, null, 2),
-    {
-      status: 500,
-      headers: {
-        "content-type": "application/json;charset=UTF-8",
-        ...defaultHeaders,
-      },
-    }
-  );
-};
 
 export default {
   async fetch(
@@ -36,7 +17,7 @@ export default {
   ): Promise<Response> {
     const parsedUrl = new URL(request.url);
 
-    // check for required query params
+    // check for required search params
     if (
       !parsedUrl.searchParams.has(LATITUDE) ||
       !parsedUrl.searchParams.has(LONGITUDE)
@@ -63,6 +44,7 @@ export default {
       lon: parsedUrl.searchParams.get(LONGITUDE),
     };
 
+    // TODO: move the API key into headers
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${env.OPEN_WEATHER_API_KEY}&units=metric`;
 
     try {
@@ -70,7 +52,7 @@ export default {
       const data: Forecast = await res.json();
 
       // open weather returns errors in 200
-      // TODO: better error message, since OpenWeather does tell you what's wrong
+      // TODO: better error message, since OpenWeather DOES tell you what's wrong
       if (data.cod !== 200) {
         return genericError();
       }
