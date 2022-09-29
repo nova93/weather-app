@@ -12,6 +12,16 @@ export async function middleware(req: NextRequest) {
 
   console.log("Location from Geo", geo);
 
+  if (geo?.latitude && geo?.longitude) {
+    url.searchParams.set("lat", geo.latitude);
+    url.searchParams.set("lon", geo.longitude);
+
+    return NextResponse.rewrite(url);
+  }
+
+  // in theory, `geo` and `ip` should provide the same data,
+  // but it is possible for `geo` object to be empty so we
+  // fall back on the `ip`.
   if (ip) {
     const res = await fetch(`http://ip-api.com/json/${ip}`);
     const data = await res.json();
@@ -23,14 +33,6 @@ export async function middleware(req: NextRequest) {
 
     return NextResponse.rewrite(url);
   }
-
-  if (geo?.latitude && geo?.longitude) {
-    url.searchParams.set("lat", geo.latitude);
-    url.searchParams.set("lon", geo.longitude);
-
-    return NextResponse.rewrite(url);
-  }
-
   return NextResponse.next();
 }
 
