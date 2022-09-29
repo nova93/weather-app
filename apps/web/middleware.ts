@@ -6,8 +6,9 @@ export async function middleware(req: NextRequest) {
   if (geo?.latitude && geo?.longitude) {
     url.searchParams.set("lat", geo.latitude);
     url.searchParams.set("lon", geo.longitude);
-    return NextResponse.rewrite(url);
   }
+
+  console.log("req", req);
 
   // TODO: might not be needed?
   if (req.ip) {
@@ -16,6 +17,8 @@ export async function middleware(req: NextRequest) {
 
     console.log("data", data);
   }
+
+  return NextResponse.rewrite(url);
 }
 
 export const config = {
